@@ -1,7 +1,7 @@
+// src/App.tsx
 import { useState } from 'react';
 import { Contract, NewContract } from '../types';
 import { useContracts } from '../hooks/useContracts';
-
 import Header from '../components/Header';
 import Dashboard from '../components/Dashboard';
 import FilterSidebar from '../components/FilterSidebar';
@@ -28,15 +28,18 @@ export default function App() {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [editingContract, setEditingContract] = useState<Contract | null>(null);
   const [viewingContract, setViewingContract] = useState<Contract | null>(null);
+  const [apiError, setApiError] = useState<string | null>(null);
 
   const handleOpenEditModal = (contract: Contract | null = null) => {
     setEditingContract(contract);
     setIsEditModalOpen(true);
+    setApiError(null);
   };
 
   const handleCloseEditModal = () => {
     setEditingContract(null);
     setIsEditModalOpen(false);
+    setApiError(null);
   };
 
   const handleOpenDetailModal = (contract: Contract) => {
@@ -52,10 +55,8 @@ export default function App() {
   const handleSaveContract = async (contractData: Contract | NewContract) => {
     try {
       if (editingContract && editingContract.cui) {
-        // Si estamos editando un contrato existente, usamos el CUI como identificador
         await updateContract({ ...contractData, cui: editingContract.cui } as Contract);
       } else if (contractData.cui) {
-        // Si es un contrato nuevo con CUI, lo creamos
         await addContract(contractData as NewContract);
       } else {
         throw new Error('El campo CUI es requerido');
@@ -63,13 +64,23 @@ export default function App() {
       handleCloseEditModal();
     } catch (error) {
       console.error('Error al guardar el contrato:', error);
-      setError(error instanceof Error ? error.message : 'Error al guardar el contrato');
+      setApiError(error instanceof Error ? error.message : 'Error al guardar el contrato');
     }
   };
-  
-  const handleDeleteContract = async (id: string) => {
+
+  const handleDeleteContract = async (cui: string) => {
+    if (!cui) {
+      setApiError('No se proporcionó el CUI para eliminar');
+      return;
+    }
+
     if (window.confirm('¿Está seguro de que desea eliminar este contrato?')) {
-        await deleteContract(id);
+      try {
+        await deleteContract(cui);
+      } catch (error) {
+        console.error('Error al eliminar el contrato:', error);
+        setApiError('Error al eliminar el contrato');
+      }
     }
   };
 
@@ -91,7 +102,11 @@ export default function App() {
 
         <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-4 md:p-6">
           <Dashboard contracts={contracts} />
-          {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">{error}</div>}
+          {(error || apiError) && (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+              {error || apiError}
+            </div>
+          )}
           <ContractTable
             contracts={contracts}
             loading={loading}
@@ -108,6 +123,7 @@ export default function App() {
           onClose={handleCloseEditModal}
           onSave={handleSaveContract}
           contract={editingContract}
+          error={apiError}
         />
       )}
 

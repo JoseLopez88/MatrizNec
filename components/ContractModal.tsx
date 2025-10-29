@@ -11,6 +11,7 @@ interface ContractModalProps {
   onClose: () => void;
   onSave: (contract: Contract | NewContract) => void;
   contract: Contract | null;
+  error?: string | null;
 }
 
 // Updated to match only fields that can be edited/created. 'status' is removed as it's derived.
