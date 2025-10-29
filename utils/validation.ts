@@ -1,4 +1,4 @@
-import { Contract, NewContract } from '../types.ts';
+import { Contract, NewContract } from '../types';
 
 export type ContractFormErrors = {
   [K in keyof (NewContract | Contract)]?: string;
@@ -52,7 +52,7 @@ export const validateContract = (contract: Partial<Contract | NewContract>): Con
   }
   if (!contract.endDate) {
     errors.endDate = 'La fecha de fin es requerida.';
-  } else if (contract.startDate && contract.endDate < contract.startDate) {
+  } else if (contract.startDate && new Date(contract.endDate) < new Date(contract.startDate)) {
     errors.endDate = 'La fecha de fin no puede ser anterior a la fecha de inicio.';
   }
   

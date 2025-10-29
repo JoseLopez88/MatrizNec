@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Contract, NewContract } from './types.ts';
+import { useState } from 'react';
+import { Contract, NewContract } from './types';
 import { useContracts } from './hooks/useContracts.ts';
 
 import Header from './components/Header.tsx';

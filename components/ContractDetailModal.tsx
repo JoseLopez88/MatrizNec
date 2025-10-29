@@ -18,7 +18,12 @@ const DetailItem: React.FC<{ label: string; value?: string | number | null; type
       case 'percentage':
         return `${value}%`;
       case 'link':
-        return <a href={String(value)} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline break-all">{value}</a>;
+        // Ensure the link has a protocol for security and functionality
+        let href = String(value);
+        if (!/^https?:\/\//i.test(href)) {
+          href = `https://${href}`;
+        }
+        return <a href={href} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline break-all">{value}</a>;
       default:
         return String(value);
     }

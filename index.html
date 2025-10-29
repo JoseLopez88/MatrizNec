@@ -1,44 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
+  <head>
     <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Matriz de Seguimiento de Contratos NEC4</title>
-    <!-- Tailwind CSS JIT CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Custom CSS for scrollbar -->
-    <link rel="stylesheet" href="./index.css">
-<script type="importmap">
-{
-  "imports": {
-    "react": "https://aistudiocdn.com/react@^19.2.0",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "vite": "https://aistudiocdn.com/vite@^7.1.12",
-    "@vitejs/plugin-react": "https://aistudiocdn.com/@vitejs/plugin-react@^5.1.0",
-    "jspdf": "https://aistudiocdn.com/jspdf@^3.0.3",
-    "jspdf-autotable": "https://aistudiocdn.com/jspdf-autotable@^5.0.2",
-    "xlsx": "https://aistudiocdn.com/xlsx@^0.18.5"
-  }
-}
-</script>
-</head>
-<body class="bg-gray-100 text-gray-800">
+    <link rel="stylesheet" href="/src/index.css" />
+  </head>
+  <body>
     <div id="root"></div>
-
-    <!-- React Libraries (loaded as global variables) -->
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    
-    <!-- Export Libraries (jsPDF for PDF, XLSX for Excel) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    
-    <!-- Babel Standalone for in-browser JSX/TSX compilation -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
-    <!-- Main Application Script -->
-    <script type="text/babel" data-type="module" src="index.tsx"></script>
-</body>
+    <script type="module" src="/src/index.tsx"></script>
+  </body>
 </html>

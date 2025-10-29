@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import { Contract, NewContract } from './types';
-import { useContracts } from './hooks/useContracts';
+import { useState } from 'react';
+import { Contract, NewContract } from '../types';
+import { useContracts } from '../hooks/useContracts';
 
-import Header from './components/Header';
-import Dashboard from './components/Dashboard';
-import FilterSidebar from './components/FilterSidebar';
-import ContractTable from './components/ContractTable';
-import ContractModal from './components/ContractModal';
-import ContractDetailModal from './components/ContractDetailModal';
+import Header from '../components/Header';
+import Dashboard from '../components/Dashboard';
+import FilterSidebar from '../components/FilterSidebar';
+import ContractTable from '../components/ContractTable';
+import ContractModal from '../components/ContractModal';
+import ContractDetailModal from '../components/ContractDetailModal';
 
 export default function App() {
   const {
@@ -48,7 +48,6 @@ export default function App() {
     setViewingContract(null);
     setIsDetailModalOpen(false);
   };
-
 
   const handleSaveContract = async (contractData: Contract | NewContract) => {
     if ('id' in contractData) {

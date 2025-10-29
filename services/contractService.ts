@@ -1,4 +1,4 @@
-import { Contract, NewContract } from '../types.ts';
+import { Contract, NewContract } from '../types';
 
 // --- INSTRUCCIONES ---
 // 1. Despliega el script de Google Apps (`Code.gs`) como una aplicación web.
@@ -20,8 +20,9 @@ const handleResponse = async (response: Response) => {
 
 const postRequest = async (body: object) => {
   if (SCRIPT_URL.includes('PEGA_AQUÍ')) {
-      console.error(URL_NOT_CONFIGURED_ERROR);
-      throw new Error(URL_NOT_CONFIGURED_ERROR);
+      const error = new Error(URL_NOT_CONFIGURED_ERROR);
+      console.error(error);
+      throw error;
   }
   
   const response = await fetch(SCRIPT_URL, {
