@@ -29,4 +29,6 @@ jobs:
         with:
           branch: gh-pages # la rama que servirá GitHub Pages
           folder: dist     # carpeta a publicar (vite output)
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.ACCESS_TOKEN }}  # Usando el token de acceso personal
+          clean: true      # Elimina archivos anteriores
+          single-commit: true  # Crea un solo commit
