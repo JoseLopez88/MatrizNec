@@ -24,6 +24,7 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src", "*.ts", "*.tsx", "*.d.ts"],
+  "include": ["src"],
+  "exclude": ["vite.config.d.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
