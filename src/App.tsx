@@ -63,7 +63,7 @@ export default function App() {
       handleCloseEditModal();
     } catch (error) {
       console.error('Error al guardar el contrato:', error);
-      setError(error instanceof Error ? error.message : 'Error al guardar el contrato');
+     
     }
   };
   
