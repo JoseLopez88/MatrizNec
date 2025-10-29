@@ -89,9 +89,11 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({ filters, setFilters, uniq
         { wch: 15 }  // Fin
       ];
       
-      if (!ws['!cols']) ws['!cols'] = [];
+      if (!ws['!cols']) {
+        ws['!cols'] = [];
+      }
       wscols.forEach((width, index) => {
-        ws['!cols'][index] = width;
+        ws['!cols']![index] = width;
       });
       
       // Forzar la descarga del archivo
