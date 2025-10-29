@@ -1,0 +1,6 @@
+{
+  "name": "matriz-contratos-nec4",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Una aplicación web para gestionar y dar seguimiento a los contratos NEC4 ECC y PSC, diseñada para ejecutarse sin necesidad de un paso de compilación."
+}

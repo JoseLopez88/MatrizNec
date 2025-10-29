@@ -1,0 +1,5 @@
+{
+  "name": "Matriz de Seguimiento de Contratos NEC4",
+  "description": "Una aplicación web para gestionar y dar seguimiento a los contratos NEC4 ECC y PSC, utilizando una interfaz moderna e intuitiva para visualizar, filtrar y administrar todos los aspectos de los contratos.",
+  "requestFramePermissions": []
+}
