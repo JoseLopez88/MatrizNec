@@ -22,7 +22,6 @@
   }
 }
 </script>
-<link rel="stylesheet" href="/index.css">
 </head>
 <body class="bg-gray-100 text-gray-800">
     <div id="root"></div>
@@ -39,8 +38,7 @@
     <!-- Babel Standalone for in-browser JSX/TSX compilation -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     
-    <!-- Main Application Script - Crucially, this now points to the root index.tsx -->
-    <script type="text/babel" data-type="module" src="./index.tsx"></script>
-<script type="module" src="/index.tsx"></script>
+    <!-- Main Application Script -->
+    <script type="text/babel" data-type="module" src="index.tsx"></script>
 </body>
 </html>
