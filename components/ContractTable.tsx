@@ -104,7 +104,7 @@ const ContractTable: React.FC<ContractTableProps> = ({ contracts, loading, onEdi
                 <button onClick={() => onEdit(contract)} className="text-blue-600 hover:text-blue-900 p-1 rounded-full hover:bg-blue-100">
                   <PencilIcon className="h-5 w-5" />
                 </button>
-                <button onClick={() => onDelete(contract.id)} className="text-red-600 hover:text-red-900 p-1 rounded-full hover:bg-red-100">
+                <button onClick={() => onDelete(contract.cui)} className="text-red-600 hover:text-red-900 p-1 rounded-full hover:bg-red-100">
                   <TrashIcon className="h-5 w-5" />
                 </button>
               </td>

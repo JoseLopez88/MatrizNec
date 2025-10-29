@@ -50,12 +50,21 @@ export default function App() {
   };
 
   const handleSaveContract = async (contractData: Contract | NewContract) => {
-    if ('id' in contractData) {
-      await updateContract(contractData as Contract);
-    } else {
-      await addContract(contractData as NewContract);
+    try {
+      if (editingContract && editingContract.cui) {
+        // Si estamos editando un contrato existente, usamos el CUI como identificador
+        await updateContract({ ...contractData, cui: editingContract.cui } as Contract);
+      } else if (contractData.cui) {
+        // Si es un contrato nuevo con CUI, lo creamos
+        await addContract(contractData as NewContract);
+      } else {
+        throw new Error('El campo CUI es requerido');
+      }
+      handleCloseEditModal();
+    } catch (error) {
+      console.error('Error al guardar el contrato:', error);
+      setError(error instanceof Error ? error.message : 'Error al guardar el contrato');
     }
-    handleCloseEditModal();
   };
   
   const handleDeleteContract = async (id: string) => {

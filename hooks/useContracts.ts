@@ -77,14 +77,15 @@ export const useContracts = () => {
     }
   };
   
-  const deleteContract = async (id: string) => {
+  const deleteContract = async (cui: string) => {
     try {
-        await contractService.deleteContract(id);
-        // Actualización optimista: filtra el contrato eliminado
-        setAllContracts(prev => prev.filter(c => c.id !== id));
+        await contractService.deleteContract(cui);
+        // Actualización optimista: filtra el contrato eliminado usando CUI
+        setAllContracts(prev => prev.filter(c => c.cui !== cui));
     } catch (e: any) {
         setError(`Error al eliminar el contrato: ${e.message}`);
         console.error(e);
+        throw e; // Re-lanzar el error para manejarlo en el componente
     }
   };
 

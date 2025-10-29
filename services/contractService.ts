@@ -5,7 +5,7 @@ import { Contract, NewContract } from '../types';
 // 2. Otorga los permisos necesarios ("Acceso: Cualquier persona").
 // 3. Copia la URL de la aplicación web desplegada.
 // 4. Pega la URL aquí abajo, reemplazando el texto de marcador de posición.
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxdCAdE4VYHE8XRrRegjviBWxKKTs4B5LAhVyF-3kCzp-UVmP_Ypj1rxZ_f7H05TVsy/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzuRVTmQJJ1O4UPwnor89eOmGDSVLG_hCXDuYyq3fxAxUIs_UxEkAejT0FSNlev_As/exec';
 
 const URL_NOT_CONFIGURED_ERROR = "La URL de Apps Script no ha sido configurada en services/contractService.ts. Reemplace el valor de SCRIPT_URL.";
 
@@ -78,10 +78,10 @@ class ContractService {
    * Realiza una llamada a la API de Apps Script.
    * POST / con action: 'DELETE'
    */
-  async deleteContract(id: string): Promise<void> {
+  async deleteContract(cui: string): Promise<void> {
     await postRequest({
       action: 'DELETE',
-      payload: { id },
+      payload: { id: cui }, // Mantenemos 'id' en el payload para compatibilidad con el backend
     });
   }
 }
