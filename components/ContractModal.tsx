@@ -86,7 +86,7 @@ const ContractModal: React.FC<ContractModalProps> = ({ isOpen, onClose, onSave, 
     for (const key in dataToValidate) {
         const initialValue = initialFormData[key as keyof NewContract];
         if (typeof initialValue === 'number' && dataToValidate[key as keyof typeof dataToValidate] === '') {
-            (dataToValidate as any)[key] = 0;
+            (dataToValidate as Record<string, string | number>)[key] = 0;
         }
     }
 

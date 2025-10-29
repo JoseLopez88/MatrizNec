@@ -18,12 +18,11 @@ export const useContracts = () => {
       // Ordenar por ID descendente para ver los más nuevos primero
       const sortedData = data.sort((a, b) => (String(b.id) > String(a.id) ? 1 : -1));
       setAllContracts(sortedData);
-    } catch (e: any) {
-      setError(`Error al cargar los contratos: ${e.message}`);
-      console.error(e);
-    } finally {
-      setLoading(false);
-    }
+    } catch (e) {
+  const errorMessage = e instanceof Error ? e.message : 'Ocurrió un error desconocido';
+  setError(`Error al cargar los contratos: ${errorMessage}`);
+  console.error(e);
+}
   }, []);
 
   useEffect(() => {
@@ -31,7 +30,7 @@ export const useContracts = () => {
   }, [fetchContracts]);
   
   useEffect(() => {
-    const safeToLowerCase = (value: any) => String(value || '').toLowerCase();
+    const safeToLowerCase = (value: unknown) => String(value || '').toLowerCase();
 
     const filtered = allContracts
       .filter(contract => {
@@ -60,8 +59,9 @@ export const useContracts = () => {
       const newContract = await contractService.createContract(contractData);
       // Actualización optimista: añade el nuevo contrato al inicio de la lista
       setAllContracts(prev => [newContract, ...prev]);
-    } catch (e: any) {
-      setError(`Error al crear el contrato: ${e.message}`);
+    } catch (e) {
+      const errorMessage = e instanceof Error ? e.message : 'Ocurrió un error desconocido';
+      setError(`Error al crear el contrato: ${errorMessage}`);
       console.error(e);
     }
   };
@@ -70,9 +70,10 @@ export const useContracts = () => {
     try {
       const updated = await contractService.updateContract(updatedContract);
       // Actualización optimista: reemplaza el contrato existente
-      setAllContracts(prev => prev.map(c => (c.id === updated.id ? updated : c)));
-    } catch (e: any) {
-      setError(`Error al actualizar el contrato: ${e.message}`);
+      setAllContracts(prev => prev.map(c => c.id === updated.id ? updated : c));
+    } catch (e) {
+      const errorMessage = e instanceof Error ? e.message : 'Ocurrió un error desconocido';
+      setError(`Error al actualizar el contrato: ${errorMessage}`);
       console.error(e);
     }
   };
@@ -82,15 +83,20 @@ export const useContracts = () => {
         await contractService.deleteContract(cui);
         // Actualización optimista: filtra el contrato eliminado usando CUI
         setAllContracts(prev => prev.filter(c => c.cui !== cui));
-    } catch (e: any) {
+    } catch (e: unknown) {
+      if (e instanceof Error) {
         setError(`Error al eliminar el contrato: ${e.message}`);
         console.error(e);
+      } else {
+        setError('Ocurrió un error desconocido');
+        console.error(e);
+      }
         throw e; // Re-lanzar el error para manejarlo en el componente
     }
   };
 
   const uniqueValues = useMemo(() => {
-    const safeTrim = (value: any) => String(value || '').trim();
+    const safeTrim = (value: unknown) => String(value || '').trim();
     // Trim and filter out empty values for cleaner dropdowns, ensuring values are strings
     const packageNames = [...new Set(allContracts.map(c => safeTrim(c.packageName)).filter(Boolean))];
     const contractors = [...new Set(allContracts.map(c => safeTrim(c.contractor)).filter(Boolean))];
