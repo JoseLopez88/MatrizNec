@@ -129,13 +129,14 @@ class ContractService {
    * Realiza una llamada a la API de Apps Script.
    * POST / con action: 'UPDATE'
    */
-  async updateContract(contract: Contract): Promise<Contract> {
-    const response = await postRequest({
-      action: 'UPDATE',
-      payload: contract as Record<string, unknown>
-    });
-    return response as Contract;
-  }
+  // En services/contractService.ts
+async updateContract(contract: Contract): Promise<Contract> {
+  const response = await postRequest({
+    action: 'UPDATE',
+    payload: contract as unknown as Record<string, unknown>
+  });
+  return response as Contract;
+}
   
   /**
    * Realiza una llamada a la API de Apps Script.
