@@ -6,10 +6,9 @@ import { ChevronLeftIcon } from './icons/ChevronLeftIcon.tsx';
 import { FileExportIcon } from './icons/FileExportIcon.tsx';
 import { FilePdfIcon } from './icons/FilePdfIcon.tsx';
 import { LogoIcon } from './icons/LogoIcon.tsx';
-
-// Declaring global variables loaded from CDN scripts in index.html
-declare var jsPDF: any;
-declare var XLSX: any;
+import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 interface FilterSidebarProps {
   filters: ContractFilter;
@@ -40,46 +39,140 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({ filters, setFilters, uniq
   };
 
   const handleExportExcel = () => {
-    const dataToExport = contracts.map(c => ({
-      'CUI': c.cui,
-      'Institución Educativa': c.educationalInstitution,
-      'Contratista': c.contractor,
-      'Paquete': c.packageName,
-      'Tipo de Contrato': c.contractType,
-      'Estado': c.status,
-      'Avance de Ejecución (%)': c.executionProgress,
-      'Monto Total (USD)': c.totalAmount,
-      'Fecha de Inicio': c.startDate,
-      'Fecha de Fin': c.endDate,
-    }));
-    const worksheet = XLSX.utils.json_to_sheet(dataToExport);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Contratos');
-    XLSX.writeFile(workbook, 'exportacion_contratos.xlsx');
+    try {
+      const dataToExport = contracts.map(c => ({
+        'CUI': c.cui || '',
+        'Institución Educativa': c.educationalInstitution || '',
+        'Contratista': c.contractor || '',
+        'Paquete': c.packageName || '',
+        'Tipo de Contrato': c.contractType || '',
+        'Estado': c.status || '',
+        'Avance de Ejecución (%)': c.executionProgress || 0,
+        'Monto Total (USD)': c.totalAmount || 0,
+        'Monto Contrato Original': c.montoContratoOriginal || 0,
+        'Monto Contrato Actualizado': c.montoContratoActualizado || 0,
+        'Período Vigente': c.periodoVigente || '',
+        'Fecha de Inicio': c.startDate || '',
+        'Fecha de Fin': c.endDate || ''
+      }));
+      
+      const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Contratos');
+      
+      // Ajustar el ancho de las columnas
+      const wscols = [
+        { wch: 15 }, // CUI
+        { wch: 30 }, // Institución
+        { wch: 30 }, // Contratista
+        { wch: 20 }, // Paquete
+        { wch: 20 }, // Tipo de Contrato
+        { wch: 15 }, // Estado
+        { wch: 20 }, // Avance
+        { wch: 20 }, // Monto Total
+        { wch: 25 }, // Monto Original
+        { wch: 25 }, // Monto Actualizado
+        { wch: 20 }, // Período
+        { wch: 15 }, // Inicio
+        { wch: 15 }  // Fin
+      ];
+      worksheet['!cols'] = wscols;
+      
+      XLSX.writeFile(workbook, 'matriz_contratos.xlsx');
+    } catch (error) {
+      console.error('Error al exportar a Excel:', error);
+      alert('Ocurrió un error al exportar a Excel. Por favor, intente nuevamente.');
+    }
   };
 
   const handleExportPdf = () => {
-    const doc = new jsPDF.default({ orientation: 'landscape' });
-    
-    (doc as any).autoTable({
-      head: [['CUI', 'Institución', 'Contratista', 'Avance (%)', 'Estado', 'Monto Total (USD)']],
-      body: contracts.map(c => [
-        c.cui,
-        c.educationalInstitution,
-        c.contractor,
-        c.executionProgress,
-        c.status,
-        new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(c.totalAmount)
-      ]),
-      styles: { fontSize: 8 },
-      headStyles: { fillColor: [22, 160, 133] },
-      columnStyles: {
-        1: { cellWidth: 60 },
-        2: { cellWidth: 50 },
-      }
-    });
-
-    doc.save('exportacion_contratos.pdf');
+    try {
+      // Crear un nuevo documento PDF en formato horizontal
+      const doc = new jsPDF('l', 'mm', 'a4');
+      const pageWidth = doc.internal.pageSize.getWidth();
+      
+      // Título del documento
+      doc.setFontSize(16);
+      doc.setTextColor(40);
+      doc.text('MATRIZ DE SEGUIMIENTO DE CONTRATOS NEC4', pageWidth / 2, 15, { align: 'center' });
+      
+      // Fecha de generación
+      doc.setFontSize(10);
+      doc.text(`Generado el: ${new Date().toLocaleDateString()}`, 14, 25);
+      
+      // Configuración de la tabla
+      const headers = [
+        'CUI',
+        'Institución',
+        'Contratista',
+        'Tipo',
+        'Paquete',
+        'Avance %',
+        'Monto (USD)'
+      ];
+      
+      const data = contracts.map(c => [
+        c.cui || '',
+        c.educationalInstitution || '',
+        c.contractor || '',
+        c.contractType || '',
+        c.packageName || '',
+        c.executionProgress ? `${c.executionProgress}%` : '0%',
+        new Intl.NumberFormat('en-US', { 
+          style: 'currency', 
+          currency: 'USD',
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        }).format(c.totalAmount || 0)
+      ]);
+      
+      // Agregar la tabla al documento
+      (doc as any).autoTable({
+        head: [headers],
+        body: data,
+        startY: 30,
+        margin: { left: 10, right: 10 },
+        styles: { 
+          fontSize: 8,
+          cellPadding: 2,
+          overflow: 'linebreak',
+          lineWidth: 0.1
+        },
+        headStyles: { 
+          fillColor: [22, 160, 133],
+          textColor: 255,
+          fontStyle: 'bold'
+        },
+        alternateRowStyles: {
+          fillColor: [245, 245, 245]
+        },
+        columnStyles: {
+          0: { cellWidth: 20 }, // CUI
+          1: { cellWidth: 45 }, // Institución
+          2: { cellWidth: 40 }, // Contratista
+          3: { cellWidth: 25 }, // Tipo
+          4: { cellWidth: 30 }, // Paquete
+          5: { cellWidth: 20 }, // Avance
+          6: { cellWidth: 25 }  // Monto
+        },
+        didDrawPage: function(data: any) {
+          // Número de página
+          const pageSize = doc.internal.pageSize;
+          const pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
+          doc.text(
+            `Página ${doc.getNumberOfPages()}`,
+            pageWidth - 20,
+            pageHeight - 10
+          );
+        }
+      });
+      
+      // Guardar el documento
+      doc.save('matriz_contratos.pdf');
+    } catch (error) {
+      console.error('Error al generar PDF:', error);
+      alert('Ocurrió un error al generar el PDF. Por favor, intente nuevamente.');
+    }
   };
 
   return (
