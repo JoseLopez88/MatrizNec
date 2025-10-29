@@ -54,17 +54,37 @@ export default function App() {
 
   const handleSaveContract = async (contractData: Contract | NewContract) => {
     try {
+      setApiError(null);
+      
       if (editingContract && editingContract.cui) {
-        await updateContract({ ...contractData, cui: editingContract.cui } as Contract);
+        // Actualizar contrato existente
+        const updatedContract = {
+          ...contractData,
+          id: editingContract.id, // Asegurarse de incluir el ID para la actualización
+          cui: editingContract.cui // Mantener el CUI original
+        } as Contract;
+        await updateContract(updatedContract);
       } else if (contractData.cui) {
+        // Crear nuevo contrato
+        if (!contractData.cui.trim()) {
+          throw new Error('El campo CUI es requerido');
+        }
         await addContract(contractData as NewContract);
       } else {
         throw new Error('El campo CUI es requerido');
       }
+      
       handleCloseEditModal();
     } catch (error) {
       console.error('Error al guardar el contrato:', error);
       setApiError(error instanceof Error ? error.message : 'Error al guardar el contrato');
+      // Forzar la actualización del estado de error en el modal
+      if (isEditModalOpen) {
+        const modal = document.querySelector('.modal');
+        if (modal) {
+          modal.scrollTop = 0; // Desplazar al principio del modal para ver el error
+        }
+      }
     }
   };
 
@@ -76,10 +96,14 @@ export default function App() {
 
     if (window.confirm('¿Está seguro de que desea eliminar este contrato?')) {
       try {
-        await deleteContract(cui);
+        setApiError(null);
+        const success = await deleteContract(cui);
+        if (!success) {
+          throw new Error('No se pudo eliminar el contrato');
+        }
       } catch (error) {
         console.error('Error al eliminar el contrato:', error);
-        setApiError('Error al eliminar el contrato');
+        setApiError(error instanceof Error ? error.message : 'Error al eliminar el contrato');
       }
     }
   };

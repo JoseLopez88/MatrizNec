@@ -80,18 +80,18 @@ export const useContracts = () => {
   
   const deleteContract = async (cui: string) => {
     try {
-        await contractService.deleteContract(cui);
-        // Actualización optimista: filtra el contrato eliminado usando CUI
-        setAllContracts(prev => prev.filter(c => c.cui !== cui));
-    } catch (e: unknown) {
-      if (e instanceof Error) {
-        setError(`Error al eliminar el contrato: ${e.message}`);
-        console.error(e);
-      } else {
-        setError('Ocurrió un error desconocido');
-        console.error(e);
+      if (!cui) {
+        throw new Error('No se proporcionó un CUI válido para eliminar');
       }
-        throw e; // Re-lanzar el error para manejarlo en el componente
+      await contractService.deleteContract(cui);
+      // Actualización optimista: filtra el contrato eliminado usando CUI
+      setAllContracts(prev => prev.filter(c => c.cui !== cui));
+      return true;
+    } catch (e) {
+      const errorMessage = e instanceof Error ? e.message : 'Ocurrió un error desconocido';
+      setError(`Error al eliminar el contrato: ${errorMessage}`);
+      console.error('Error en deleteContract:', e);
+      return false;
     }
   };
 
