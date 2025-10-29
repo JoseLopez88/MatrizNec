@@ -40,25 +40,37 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({ filters, setFilters, uniq
 
   const handleExportExcel = () => {
     try {
-      const dataToExport = contracts.map(c => ({
-        'CUI': c.cui || '',
-        'Institución Educativa': c.educationalInstitution || '',
-        'Contratista': c.contractor || '',
-        'Paquete': c.packageName || '',
-        'Tipo de Contrato': c.contractType || '',
-        'Estado': c.status || '',
-        'Avance de Ejecución (%)': c.executionProgress || 0,
-        'Monto Total (USD)': c.totalAmount || 0,
-        'Monto Contrato Original': c.montoContratoOriginal || 0,
-        'Monto Contrato Actualizado': c.montoContratoActualizado || 0,
-        'Período Vigente': c.periodoVigente || '',
-        'Fecha de Inicio': c.startDate || '',
-        'Fecha de Fin': c.endDate || ''
+      // Verificar si hay contratos para exportar
+      if (!contracts || contracts.length === 0) {
+        alert('No hay datos para exportar');
+        return;
+      }
+
+      // Crear un arreglo de objetos con los datos a exportar
+      const dataToExport = contracts.map(contract => ({
+        'CUI': contract.cui || 'N/A',
+        'Institución Educativa': contract.educationalInstitution || 'N/A',
+        'Contratista': contract.contractor || 'N/A',
+        'Paquete': contract.packageName || 'N/A',
+        'Tipo de Contrato': contract.contractType || 'N/A',
+        'Estado': contract.status || 'N/A',
+        'Avance de Ejecución (%)': contract.executionProgress || 0,
+        'Monto Total (USD)': contract.totalAmount || 0,
+        'Monto Contrato Original': contract.montoContratoOriginal || 0,
+        'Monto Contrato Actualizado': contract.montoContratoActualizado || 0,
+        'Período Vigente': contract.periodoVigente || 'N/A',
+        'Fecha de Inicio': contract.startDate || 'N/A',
+        'Fecha de Fin': contract.endDate || 'N/A'
       }));
+
+      // Crear una nueva hoja de cálculo
+      const ws = XLSX.utils.json_to_sheet(dataToExport);
       
-      const worksheet = XLSX.utils.json_to_sheet(dataToExport);
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, 'Contratos');
+      // Crear un nuevo libro de trabajo
+      const wb = XLSX.utils.book_new();
+      
+      // Añadir la hoja al libro
+      XLSX.utils.book_append_sheet(wb, ws, 'Contratos');
       
       // Ajustar el ancho de las columnas
       const wscols = [
@@ -76,12 +88,21 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({ filters, setFilters, uniq
         { wch: 15 }, // Inicio
         { wch: 15 }  // Fin
       ];
-      worksheet['!cols'] = wscols;
       
-      XLSX.writeFile(workbook, 'matriz_contratos.xlsx');
+      if (!ws['!cols']) ws['!cols'] = [];
+      wscols.forEach((width, index) => {
+        ws['!cols'][index] = width;
+      });
+      
+      // Forzar la descarga del archivo
+      XLSX.writeFile(wb, 'matriz_contratos.xlsx', {
+        bookType: 'xlsx',
+        type: 'file'
+      });
+      
     } catch (error) {
       console.error('Error al exportar a Excel:', error);
-      alert('Ocurrió un error al exportar a Excel. Por favor, intente nuevamente.');
+      alert(`Error al exportar a Excel: ${error instanceof Error ? error.message : 'Error desconocido'}`);
     }
   };
 
