@@ -7,7 +7,7 @@
     <!-- Tailwind CSS JIT CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Custom CSS for scrollbar -->
-    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="./index.css">
 <script type="importmap">
 {
   "imports": {
@@ -27,7 +27,7 @@
 <body class="bg-gray-100 text-gray-800">
     <div id="root"></div>
 
-    <!-- React Libraries -->
+    <!-- React Libraries (loaded as global variables) -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     
@@ -39,8 +39,8 @@
     <!-- Babel Standalone for in-browser JSX/TSX compilation -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     
-    <!-- Main Application Script -->
-    <script type="text/babel" data-type="module" src="index.tsx"></script>
+    <!-- Main Application Script - Crucially, this now points to the root index.tsx -->
+    <script type="text/babel" data-type="module" src="./index.tsx"></script>
 <script type="module" src="/index.tsx"></script>
 </body>
 </html>

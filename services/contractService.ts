@@ -1,5 +1,3 @@
-
-
 import { Contract, NewContract } from '../types.ts';
 
 // --- INSTRUCCIONES ---
