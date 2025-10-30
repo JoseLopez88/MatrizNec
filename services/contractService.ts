@@ -11,7 +11,7 @@ interface PostRequestBody {
 // 2. Otorga los permisos necesarios ("Acceso: Cualquier persona").
 // 3. Copia la URL de la aplicación web desplegada.
 // 4. Pega la URL aquí abajo, reemplazando el texto de marcador de posición.
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz3I83ADi4pRGWeG-Q2EZ4_gz-e0ev0mgyvJPEbN8ndTsMtI9nrPgYUw7cZgxPE5nhB/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxpvOUa4TVOmlUR3Q-b9BSiY0LwBeM430-9zZOFs8JsdcS67wN5_jqO1RfFeOqWLPYn/exec';
 
 const URL_NOT_CONFIGURED_ERROR = "La URL de Apps Script no ha sido configurada en services/contractService.ts. Reemplace el valor de SCRIPT_URL.";
 
