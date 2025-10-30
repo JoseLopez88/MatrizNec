@@ -59,10 +59,7 @@ const postRequest = async (body: PostRequestBody) => {
     
     const response = await fetch(SCRIPT_URL, {
       method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
+      headers: {},
       body: JSON.stringify({
         ...body,
         // Asegurarse de que el action esté presente
