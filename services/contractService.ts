@@ -11,7 +11,7 @@ interface PostRequestBody {
 // 2. Otorga los permisos necesarios ("Acceso: Cualquier persona").
 // 3. Copia la URL de la aplicación web desplegada.
 // 4. Pega la URL aquí abajo, reemplazando el texto de marcador de posición.
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxpvOUa4TVOmlUR3Q-b9BSiY0LwBeM430-9zZOFs8JsdcS67wN5_jqO1RfFeOqWLPYn/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxpcw4CAgZXb3s7fw1LhLXF9MTjlcUj08MZ5G8ccEtGhJbWMYQQ_9xeRfYWdTsvFp8w/exec';
 
 const URL_NOT_CONFIGURED_ERROR = "La URL de Apps Script no ha sido configurada en services/contractService.ts. Reemplace el valor de SCRIPT_URL.";
 
@@ -53,26 +53,17 @@ const postRequest = async (body: PostRequestBody) => {
     throw error;
   }
 
-  // Truco para evitar la redirección de CORS de Google Apps Script
-  const url = new URL(SCRIPT_URL);
-  Object.keys(body).forEach(key => {
-    if (key === 'payload') {
-      url.searchParams.append(key, JSON.stringify(body[key]));
-    } else {
-      url.searchParams.append(key, String(body[key]));
-    }
-  });
-
   try {
-    console.log('Enviando solicitud a:', url.toString());
+    console.log('Enviando solicitud a:', SCRIPT_URL);
     console.log('Datos enviados:', JSON.stringify(body, null, 2));
 
-    const response = await fetch(url.toString(), {
-      method: 'GET', // Usar GET para la solicitud principal
+    const response = await fetch(SCRIPT_URL, {
+      method: 'POST',
       mode: 'cors',
       headers: {
-        'Content-Type': 'text/plain;charset=utf-8',
+        'Content-Type': 'application/json',
       },
+      body: JSON.stringify(body),
     });
 
     console.log('Respuesta recibida - Estado:', response.status, response.statusText);
