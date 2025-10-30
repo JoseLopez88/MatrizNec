@@ -52,29 +52,33 @@ const postRequest = async (body: PostRequestBody) => {
     console.error(error);
     throw error;
   }
-  
+
+  // Truco para evitar la redirección de CORS de Google Apps Script
+  const url = new URL(SCRIPT_URL);
+  Object.keys(body).forEach(key => {
+    if (key === 'payload') {
+      url.searchParams.append(key, JSON.stringify(body[key]));
+    } else {
+      url.searchParams.append(key, String(body[key]));
+    }
+  });
+
   try {
-    console.log('Enviando solicitud a:', SCRIPT_URL);
+    console.log('Enviando solicitud a:', url.toString());
     console.log('Datos enviados:', JSON.stringify(body, null, 2));
-    
-    const response = await fetch(SCRIPT_URL, {
-      method: 'POST',
-      headers: {},
-      body: JSON.stringify({
-        ...body,
-        // Asegurarse de que el action esté presente
-        action: body['action'] || 'UNKNOWN_ACTION'
-      }),
+
+    const response = await fetch(url.toString(), {
+      method: 'GET', // Usar GET para la solicitud principal
       mode: 'cors',
-      cache: 'no-cache',
-      credentials: 'omit',
-      redirect: 'follow',
+      headers: {
+        'Content-Type': 'text/plain;charset=utf-8',
+      },
     });
-    
+
     console.log('Respuesta recibida - Estado:', response.status, response.statusText);
     return await handleResponse(response);
   } catch (error) {
-    console.error('Error en la solicitud POST:', error);
+    console.error('Error en la solicitud:', error);
     if (error instanceof Error) {
       throw new Error(`Error de red: ${error.message}`);
     }
